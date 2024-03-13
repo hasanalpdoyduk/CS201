@@ -1,0 +1,1 @@
++10x2+5xy+5xz+20xy+10x2+5xy+5xz+20xy+6xy+3y2+3yz+12y2+6xy+3y2+3yz+12y2+4x+2y+2z+8y+4x+2y+2z+8y+6x2+3xy+3xz+12xy+6x2+3xy+3xz+12xy+4xy+2y2+2yz+8y2+4xy+2y2+2yz+8y2+90x2+45xy+45xz+180xy+90x2+45xy+45xz+180xy+4xy+2y2+2yz+8y2+4xy+2y2+2yz+8y2+8x+4y+4z+16y+8x+4y+4z+16y+4x2+2xy+2xz+8xy+4x2+2xy+2xz+8xy
