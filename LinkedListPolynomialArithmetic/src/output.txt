@@ -1,1 +1,0 @@
--10x2yz-20xy-10x2yz+20xy+6xy2z+12y2+6xy2z-12y2+4xyz+8y+4xyz-8y+6x2yz+12xy+6x2yz-12xy+4xy2z+8y2+4xy2z-8y2+90x2yz+180xy+90x2yz-180xy+4xy2z+8y2+4xy2z-8y2+8xyz+16y+8xyz-16y+4x2yz+8xy+4x2yz-8xy
