@@ -44,11 +44,55 @@ public class Stack {
         return null;
     }
 
-    /*
+    
     Element peek(){
         return array[top];
     }
+
+
+
+
+    
+    // Methods for Questions
+
+    /*
+    In order to use it
+    You should initializ a variable maxSize in top lines and you should write it in constructor
+    // Exercise 16:
+    public void removeOddIndexed() {
+        Stack tempStack = new Stack(maxSize);
+        boolean isOdd = true;
+
+        while (!isEmpty()) {
+            int element = pop();
+            if (isOdd) {
+                tempStack.push(element);
+            }
+            isOdd = !isOdd;
+        }
+
+        while (!tempStack.isEmpty()) {
+            push(tempStack.pop());
+        }
+    }
      */
+
+
+    // Exercise 17:
+    Element pop(int k){
+        if (k < 1 || k > top + 1){
+            throw new IllegalArgumentException("Invalid index");
+        }
+        Element removedElement = array[top - k + 1];
+
+        for (int i = top - k + 1; i < top; i++){
+            array[i] = array[i + 1];
+        }
+
+        top--;
+
+        return removedElement;
+    }
 
 }
 
