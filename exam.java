@@ -539,5 +539,534 @@ public class Queue {
         return current;
     }
 
+}
 
+
+//__________________________________________________
+// HASH
+
+//__________________________________________________
+// ARRAY IMPLEMENTATION
+
+
+public class Hash {
+
+    private Element[] table;
+
+    private boolean[] deleted;
+
+    private int N;
+
+    public Hash(int N){
+        table = new Element[N];
+        deleted = new boolean[N];
+        this.N = N;
+    }
+
+    private int hashFunction(int value){
+        return value % N;
+    }
+
+    public Element search(int value){
+        int address;
+        address = hashFunction(value);
+        while (table[address] != null){
+            if (!deleted[address] && table[address].getData() == value){
+                break;
+            }
+            address = (address + 1) % N;
+        }
+        return table[address];
+    }
+
+    public void insert(int value){
+        int address;
+        address = hashFunction(value);
+        while (table[address] != null && !deleted[address]){
+            address = (address + 1) % N;
+        }
+        if (table[address] != null){
+            deleted[address] = false;
+        }
+        table[address] = new Element(value);
+    }
+
+    public void deleteValue(int value){
+        int address;
+        address = hashFunction(value);
+        while (table[address] != null){
+            if (!deleted[address] && table[address].getData() == value){
+                break;
+            }
+            address = (address + 1) % N;
+        }
+        deleted[address] = true;
+    }
+
+
+
+
+//Question 9
+// Write a function that computes the load factor of an hash table implemented with a fixed array. The load factor of a hash table is the ratio
+//of the number of elements in the hash table to the table size.
+
+    public double loadFactor() {
+        int numElements = 0;
+        for (Element element : table) {
+            if (element != null) {
+                numElements++;
+            }
+        }
+        return (double) numElements / table.length; // table.length is the size of the fixed array
+    }
+
+
+    
+//Question 11
+// A sequence of n > 0 integers is called a jolly jumper if the absolute
+//values of the differences between successive elements take on all possible
+//values 1 through n - 1. For instance, 1 4 2 3 is a jolly jumper, because
+//the absolute differences are 3, 2, and 1, respectively. Write a function
+//to determine whether a sequence of numbers is a jolly jumper.
+
+    public boolean jollyJumper(int[] sequence) {
+        int n = sequence.length;
+        boolean[] diffExists = new boolean[n]; // To keep track of the differences
+
+        for (int i = 1; i < n; i++) {
+            int diff = Math.abs(sequence[i] - sequence[i - 1]);
+            if (diff < 1 || diff >= n || diffExists[diff]) {
+                return false; // If the difference is out of range or already exists
+            }
+            diffExists[diff] = true; // Mark the difference as seen
+        }
+
+        // Check if all differences from 1 to n-1 exist
+        for (int i = 1; i < n; i++) {
+            if (!diffExists[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+
+//Question 12
+// Write a function which returns the number of items in the hash table
+//whose values are between X and Y. Your method should run in O(N)
+//time.
+
+    public int between(int X, int Y) {
+        int count = 0;
+        for (Element element : table) {
+            if (element != null && element.getData() >= X && element.getData() <= Y) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+
+
+//Question 13
+//Write a function which undeletes the recently deleted value from the
+//hash table. Assume that linear probing is used as the collision strategy.
+
+    public void undelete(int value) {
+        int index = hashFunction(value);
+        int start = index;
+
+        do {
+            if (table[index] != null && table[index].getData() == value) {
+                table[index] = null; // Mark as not deleted by setting to null
+                return;
+            }
+            index = (index + 1) % N;
+        } while (index != start);
+    }
+
+
+
+//Question 15
+//Write function that finds the number of empty slots in an hash table
+//(For both array and linked list implementations).
+
+    public int numberOfEmptySlots() {
+        int count = 0;
+        for (int i = 0; i < table.length; i++) {
+            if (table[i] == null) {
+                count++; // Increment count for each empty slot
+            }
+        }
+        return count;
+    }
+
+
+
+//Question 16
+// Write a method that deletes all elements having value X. Assume also
+//that X can exist more than once in the hash table. Write the function
+//for both array and linked list implementations. For array implementation assume that linear probing is used as the collision strategy. Do
+//not use any class or external methods except hashFunction.
+
+    public void deleteAll(int X) {
+        for (int i = 0; i < table.length; i++) {
+            if (table[i] != null && table[i].getData() == X) {
+                table[i] = null; // Remove element with value X
+            }
+        }
+    }
+
+
+
+//Question 17
+//Write an hash function that maps the key values in an hash table into
+//an hash value. Assume that the hash value of an hash table can be
+//obtained first by summing up the key values of the elements in the
+//hash table and then hashing the sum. Write the function for array implementation. Assume also that linear probing is used as the collision
+//strategy. Do not use any class or external methods except hashFunction.
+
+    public int hashFunctionItSelf() {
+        int hash = 0;
+        for (Element element : table) {
+            if (element != null) {
+                hash += element.getData();
+            }
+        }
+        return hash % N;
+    }
+
+
+
+//Question 18
+// Write a static method that takes an array of integers as a parameter
+//and checks if the array contains any duplicate elements. Your method
+//should run in O(N) time, where N is the size of the array. You are
+//allowed to use any methods and external data structures we learned in
+//the class.
+
+    public class DuplicateChecker {
+
+        public static boolean anyDuplicate(int[] array) {
+            Object[] seen = new Object[1000000]; // Assuming the range of integers in the array is limited
+
+            for (int i : array) {
+                if (seen[i] != null) {
+                    return true; // Found a duplicate
+                }
+                seen[i] = new Object();
+            }
+
+            return false; // No duplicates found
+        }
+    }
+
+
+
+//Question 19
+// Write a method that simplifies a hash table by creating a new hash
+//table containing elements from the original hash table, where
+//- For single occurrence of a value, copy that value to the new table
+//- For multiple occurrences of that value, copy that value only once
+//to the new table
+//Write the function both array and linked list implementations. You are
+//allowed to use linked list and hashing methods.
+
+    public Hash simplify() {
+        Hash simplifiedHash = new Hash(N); // Assuming N is the size of the new hash table
+
+        for (int i = 0; i < table.length; i++) {
+            if (table[i] != null && !simplifiedHash.contains(table[i].getData())) {
+                simplifiedHash.insert(table[i].getData());
+            }
+        }
+
+        return simplifiedHash;
+    }
+
+    public boolean contains(int value) {
+        for (int i = 0; i < table.length; i++) {
+            if (table[i] != null && table[i].getData() == value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+//Question 20
+//Write the method
+//that finds the number of clusters in hash table. A cluster is a contiguous
+//group of non-null elements in the array.
+
+    public int numberOfClusters() {
+        int clusters = 0;
+        boolean inCluster = false;
+
+        for (int i = 0; i < table.length; i++) {
+            if (table[i] != null && !inCluster) {
+                clusters++;
+                inCluster = true;
+            } else if (table[i] == null) {
+                inCluster = false;
+            }
+        }
+
+        return clusters;
+    }
+
+
+
+//Question 22
+//Write a static method in Hash class
+//int numberOfExtras(int[] array)
+//that takes an array of integers as a parameter and counts the number
+//of extra elements in the array. Your method should run in O(N)
+//time, where N is the size of the array. Use hashing.
+//1 4 2 5 2 4 3 4 → 3 extras (two 4, one 2)
+//2 1 2 1 2 3 1 2 1 2 → 7 extras (four 2, three 1)
+//1 1 1 1 1 1 → 5 extras (five 1)
+
+    public static int numberOfExtras(int[] array) {
+        int[] countArray = new int[array.length];
+        int extras = 0;
+
+        for (int value : array) {
+            int index = Math.abs(value) % array.length;
+            countArray[index]++;
+        }
+
+        for (int value : array) {
+            int index = Math.abs(value) % array.length;
+            if (countArray[index] > 1) {
+                extras++;
+                countArray[index]--;
+            }
+        }
+
+        return extras;
+    }
+
+
+//__________________________________________________
+// LINKED LIST IMPLEMENTATION
+    
+}
+
+public class Hash {
+
+    private LinkedList[] table;
+
+    private int N;
+
+    public Hash(int N) {
+        table = new LinkedList[N];
+        for (int i = 0; i < N; i++) {
+            table[i] = new LinkedList();
+        }
+        this.N = N;
+    }
+
+    public Node search(int value) {
+        int address;
+        address = hashFunction(value);
+        return table[address].search(value);
+    }
+
+    public void insert(int value) {
+        int address;
+        address = hashFunction(value);
+        table[address].insertLast(new Node(value));
+    }
+
+    public void insert(Node node) {
+        int address;
+        address = hashFunction(node.data);
+        table[address].insertLast(node);
+    }
+
+    public void deleteValue(int value) {
+        int address;
+        if (search(value) != null) {
+            address = hashFunction(value);
+            table[address].deleteValue(value);
+        }
+    }
+
+    private int hashFunction(int value) {
+        return value % N;
+    }
+
+
+
+//Question 10
+//Write a function that computes the load factor of an hash table implemented with an array of linked lists (Separate chaining). The load
+//factor of a hash table is the ratio of the number of elements in the hash
+//table to the table size.
+
+    public double loadFactor() {
+        int numElements = 0;
+        for (LinkedList list : table) {
+            if (list != null) {
+                Node current = list.getHead();
+                while (current != null) {
+                    numElements++;
+                    current = current.getNext();
+                }
+            }
+        }
+        return (double) numElements / N; // N is the size of the hash table
+    }
+
+
+
+
+//Question 12
+// Write a function which returns the number of items in the hash table
+//whose values are between X and Y. Your method should run in O(N)
+//time.
+
+    public int between(int X, int Y) {
+        int count = 0;
+        for (LinkedList list : table) {
+            Node current = list.getHead();
+            while (current != null) {
+                if (current.getData() >= X && current.getData() <= Y) {
+                    count++;
+                }
+                current = current.getNext();
+            }
+        }
+        return count;
+    }
+
+
+
+
+//Question 13
+//Write a function which undeletes the recently deleted value from the
+//hash table. Assume that linear probing is used as the collision strategy.
+
+    public void undelete(int value) {
+        int index = hashFunction(value);
+        LinkedList list = table[index];
+
+        if (list != null) {
+            Node current = list.getHead();
+            while (current != null) {
+                if (current.getData() == value) {
+                    current = null; // Mark as not deleted by setting to null
+                    return;
+                }
+                current = current.getNext();
+            }
+        }
+    }
+
+
+
+//Question 15
+//Write function that finds the number of empty slots in an hash table
+//(For both array and linked list implementations).
+
+    public int numberOfEmptySlots() {
+        int count = 0;
+        for (LinkedList list : table) {
+            if (list.isEmpty()) {
+                count++; // Increment count for each empty slot
+            }
+        }
+        return count;
+    }
+
+
+
+//Question 16
+// Write a method that deletes all elements having value X. Assume also
+//that X can exist more than once in the hash table. Write the function
+//for both array and linked list implementations. For array implementation assume that linear probing is used as the collision strategy. Do
+//not use any class or external methods except hashFunction.
+
+    public void deleteAll(int X) {
+        for (LinkedList list : table) {
+            Node current = list.getHead();
+            while (current != null) {
+                if (current.getData() == X) {
+                    list.deleteValue(current.getData()); // Remove element with value X
+                    break; // Exit loop after removing first occurrence
+                }
+                current = current.getNext();
+            }
+        }
+    }
+
+
+
+//Question 19
+// Write a method that simplifies a hash table by creating a new hash
+//table containing elements from the original hash table, where
+//- For single occurrence of a value, copy that value to the new table
+//- For multiple occurrences of that value, copy that value only once
+//to the new table
+//Write the function both array and linked list implementations. You are
+//allowed to use linked list and hashing methods.
+
+    public Hash simplify() {
+        Hash simplifiedHash = new Hash(N); // Assuming N is the size of the new hash table
+
+        for (LinkedList list : table) {
+            Node current = list.getHead();
+            while (current != null) {
+                if (!simplifiedHash.contains(current.getData())) {
+                    simplifiedHash.insert(current.getData());
+                }
+                current = current.getNext();
+            }
+        }
+
+        return simplifiedHash;
+    }
+
+    public boolean contains(int value) {
+        for (LinkedList list : table) {
+            Node current = list.getHead();
+            while (current != null) {
+                if (current.getData() == value) {
+                    return true;
+                }
+                current = current.getNext();
+            }
+        }
+        return false;
+    }
+
+
+
+//Question 21
+//Write the method
+//boolean perfectMap()
+//that returns true if the hash table contains one node at maximum per
+//linked list in separate chaining, otherwise it returns false.
+
+    public boolean perfectMap() {
+        for (LinkedList list : table) {
+            if (list != null && size(list) > 1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private int size(LinkedList list) {
+        int size = 0;
+        Node current = list.getHead();
+        while (current != null) {
+            size++;
+            current = current.getNext();
+        }
+        return size;
+    }
 }
